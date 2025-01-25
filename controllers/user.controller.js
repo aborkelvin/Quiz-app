@@ -47,22 +47,32 @@ const forgotPassword = async (req, res, next) => {
       });
     }
 
+    // Check for existing otp and Delete Existing OTP (If Found)
+    const existingOtp = await Otp.findOne({ email });
+    if (existingOtp) {
+      await Otp.deleteOne({ _id: existingOtp._id }); // Or similar delete method
+    }
+
     // Generate Otp
     const generatedOtp = Math.floor(1000 + Math.random() * 9000);
     const otp = await Otp.create({ email: user.email, otp: generatedOtp });
 
     // Send email with otp
     const transporter = nodemailer.createTransport({
-      host: "sandbox.smtp.mailtrap.io",
-      port: 2525,
+      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 587,
       auth: {
-        user: "bbc963b93f017d", // your Mailtrap username
-        pass: "ea4fccf83f891b", // your Mailtrap password
+        user: process.env.MAIL_OPTIONS_USER,
+        pass: process.env.MAIL_OPTIONS_PASSWORD,
       },
     });
 
     const mailOptions = {
-      from: "youremail@gmail.com",
+      from: {
+        name: "Quiz App Facilitators",
+        address: process.env.MAIL_OPTIONS_USER,
+      },
       to: user.email,
       subject: "Reset Password Otp",
       text: `Your Otp is ${generatedOtp}`,
