@@ -5,6 +5,7 @@ const createAuthenticationToken = async (req, res, status) => {
   const token = jwt.sign(user._doc, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRATION,
   });
+  req.password = undefined;
   return res.status(status).json({
     success: true,
     token,
