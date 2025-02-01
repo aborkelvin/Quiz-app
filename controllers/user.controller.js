@@ -27,8 +27,18 @@ const signIn = async (req, res, next) => {
 const signUp = async (req, res, next) => {
   try {
     const user = await User.create(req.body);
+
     createAuthenticationToken(user, res, 201);
   } catch (err) {
+    // Return valid error if username or email already exists
+    if (err.code === 11000) {
+      // Duplicate key error (username or email already exists)
+      return res.status(400).json({
+        status: "failure",
+        message: `The ${Object.keys(err.keyValue)} already exists`,
+      });
+    }
+
     res.status(400).json({
       status: "failure",
       message: err.message ? err.message : "Internal Server error",
