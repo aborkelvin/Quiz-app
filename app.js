@@ -2,6 +2,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const { userRouter } = require("./routes/user.route");
 const cors = require("cors");
+const quizRouter = require("./routes/quiz.route");
+const questionRouter = require("./routes/question.route");
+const resultRouter = require("./routes/result.route");
 
 require("dotenv").config();
 
@@ -11,6 +14,9 @@ app.use(cors());
 
 //Routes
 app.use("/users", userRouter);
+app.use("/quiz", quizRouter);
+app.use("/questions", questionRouter);
+app.use("/results", resultRouter);
 
 mongoose
   .connect(process.env.MONGODB_LOCAL)

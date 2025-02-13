@@ -25,10 +25,10 @@ const verifyJWTAuthToken = (req, res, next) => {
 
 // A more generic role restriction middleware
 const restrictTo = (allowedRolesArr) => (req, res, next) => {
+  //console.log(req.user);
   if (!allowedRolesArr.includes(req.user.role)) {
-    res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Unauthorized" });
   }
-
   next();
 };
 
