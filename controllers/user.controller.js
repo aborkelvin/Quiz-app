@@ -1,12 +1,11 @@
 const bcrypt = require("bcryptjs");
-
 const { createAuthenticationToken } = require("../auth/authFunctions");
 const User = require("../models/user.model");
 const { createOne, getAll } = require("./generic.controller");
 const Otp = require("../models/otp.model");
-const getAllUsers = getAll(User, "User");
 const nodemailer = require("nodemailer");
 
+const getAllUsers = getAll(User, "User");
 //Sign in
 const signIn = async (req, res, next) => {
   const { username, password } = req.body;
@@ -24,6 +23,7 @@ const signIn = async (req, res, next) => {
   createAuthenticationToken(req.user, res, 200);
 };
 
+// Sign up
 const signUp = async (req, res, next) => {
   try {
     const user = await User.create(req.body);
