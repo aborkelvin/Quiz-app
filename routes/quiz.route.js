@@ -53,16 +53,22 @@ quizRouter.post(
           questions = [questions];
         }
 
+        //console.log("There are questions" + questions[0].media);
+        //console.log(req.file);
+        console.log(req.files);
+
         createdQuestions = await Promise.all(
           questions.map(async (q, index) => {
             let mediaUrl = null;
 
             // Find the corresponding file for the question
-            if (req.file) {
+            if (req.files) {
+              console.log("Found files one");
               const mediaFile = req.files.find(
                 (file) => file.fieldname === `questions[${index}][media]`
               );
               if (mediaFile) {
+                console.log("Found media file");
                 mediaUrl = mediaFile.path;
               }
             }
