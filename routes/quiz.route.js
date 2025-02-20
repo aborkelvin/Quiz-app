@@ -160,7 +160,10 @@ quizRouter.post("/:id/start", verifyJWTAuthToken, async (req, res) => {
     if (existingAttempt && existingAttempt.attempts >= maxAttempts) {
       return res
         .status(400)
-        .json({ message: "You have reached the maximum number of attempts." });
+        .json({
+          message:
+            "You have reached the maximum number of attempts for this quiz.",
+        });
     }
 
     const attempts = existingAttempt ? existingAttempt.attempts + 1 : 1;
