@@ -120,6 +120,25 @@ quizRouter.get("/", async (req, res) => {
   }
 });
 
+// Get quizzes created by me
+quizRouter.get("/creator/:creatorId", verifyJWTAuthToken, async (req, res) => {
+  //console.log(req.user._id);
+  //console.log("I am h");
+  try {
+    const quizzes = await Quiz.find({ creator: req.params.creatorId })
+      .populate("creator", "username")
+      .populate("questions");
+
+    // If no quizzes are found, return 404
+    if (!quizzes)
+      res.status(404).json({ message: "No quizzes found for this creator" });
+
+    res.status(200).json(quizzes);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Get a quiz by ID
 quizRouter.get("/:id", async (req, res) => {
   try {
