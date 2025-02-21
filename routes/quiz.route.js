@@ -158,12 +158,10 @@ quizRouter.post("/:id/start", verifyJWTAuthToken, async (req, res) => {
       createdAt: -1,
     });
     if (existingAttempt && existingAttempt.attempts >= maxAttempts) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "You have reached the maximum number of attempts for this quiz.",
-        });
+      return res.status(400).json({
+        message:
+          "You have reached the maximum number of attempts for this quiz.",
+      });
     }
 
     const attempts = existingAttempt ? existingAttempt.attempts + 1 : 1;
@@ -215,6 +213,8 @@ quizRouter.post("/:id/submit", verifyJWTAuthToken, async (req, res) => {
 
     // Scoring logic
     let score = 0;
+    let correctAnswersCount = 0;
+    let incorrectAnswersCount = 0;
     quiz.questions.forEach((question) => {
       const userAnswer = answers.find((a) => a.questionId == question._id);
       if (
@@ -222,6 +222,9 @@ quizRouter.post("/:id/submit", verifyJWTAuthToken, async (req, res) => {
         question.correctAnswers.includes(userAnswer.selectedOption)
       ) {
         score += quiz.settings.pointsPerQuestion;
+        correctAnswersCount++;
+      } else {
+        incorrectAnswersCount++;
       }
     });
 
@@ -230,6 +233,10 @@ quizRouter.post("/:id/submit", verifyJWTAuthToken, async (req, res) => {
     result.answers = answers;
     result.timeTaken = timeTaken;
     result.endTime = endTime;
+    result.totalPossiblePoints =
+      quiz.settings.pointsPerQuestion * quiz.questions.length;
+    result.correctAnswersCount = correctAnswersCount;
+    result.incorrectAnswersCount = incorrectAnswersCount;
     await result.save();
 
     res.status(201).json({ message: "Quiz submitted", score, result: result });

@@ -38,6 +38,18 @@ const resultSchema = new Schema(
       type: Number,
       default: 1,
     },
+    totalPossiblePoints: {
+      type: Number,
+      default: 0, // Default points per quiz
+    },
+    correctAnswersCount: {
+      type: Number,
+      default: 0, // Count of correct answers
+    },
+    incorrectAnswersCount: {
+      type: Number,
+      default: 0, // Count of incorrect answers
+    },
   },
   { timestamps: true }
 );

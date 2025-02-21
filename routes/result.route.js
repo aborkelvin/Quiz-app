@@ -28,4 +28,19 @@ resultRouter.get("/mine", verifyJWTAuthToken, async (req, res) => {
   }
 });
 
+// Get a particluar result based on result id
+resultRouter.get("/:resultId", verifyJWTAuthToken, async (req, res) => {
+  try {
+    const result = await Result.findById(req.params.resultId)
+      .populate("quizId", "title description")
+      .populate("userId", "username");
+
+    if (!result) return res.status(404).json({ error: "Result not found" });
+
+    res.status(200).json({ success: true, result });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = resultRouter;
